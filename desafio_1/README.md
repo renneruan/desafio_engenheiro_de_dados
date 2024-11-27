@@ -4,13 +4,13 @@
 Para o desafio 1 temos que um endpoint nos devolve um arquivo JSON, `ERP.json`
 
 De forma discursiva o JSON apresentado apresenta um aninhamento de objetos referentes aos pedidos de uma loja.
-- Nível inicial temos informações referente a requisição e um atributo contendo um *Array* de objetos de pedidos, neste exemplo há apenas um pedido, porém como temos um *Array* na prática provavelmente este JSON teria uma lista de pedidos. 
-  - Os objetos de pedidos podemos enxergá-los como o segundo nível no JSON, estes contém diversos atributos referentes ao pedido do usuário, como tempos, valores, informações da mesa e demais informações que possam ser úteis. Cada objeto de pedido há dois atributos que também nos devolvem uma lista aninhada para outros JSONs `taxes` e `detailLines`.
+- Nível inicial temos informações referentes a requisição e um atributo contendo um *Array* de objetos de pedidos. Neste exemplo há apenas um pedido, porém como temos um *Array*, na prática este JSON teria uma lista de pedidos. 
+  - Os objetos de pedidos podemos enxergá-los como o segundo nível no JSON, estes contém diversos atributos referentes ao pedido do usuário como tempos, valores, informações da mesa e demais dados que possam ser úteis. Cada objeto de pedido há dois atributos que também nos devolvem uma lista aninhada para outros JSONs `taxes` e `detailLines`.
     - `taxes` se refere provavelmente a tributações referentes ao pedido.
-    - `detailLines` se refere aos itens solicitados pelo cliente neste pedido. Aqui temos também uma coletânea de dados referentes ao item e um objeto `menuItem`, diferentemente das outras aninhações, este objeto não é ligado a uma lista, mas sim a um único registro JSON.
+    - `detailLines` se refere aos itens solicitados pelo cliente neste pedido. Aqui temos também uma coletânea de dados, referentes ao objeto `menuItem`. Diferentemente das outras aninhações, este objeto não é ligado em forma de lista, mas sim a um único registro JSON.
       - `menuItem` Informações do item de menu em que o pedido foi realizado.
 
-Podemos fazer palpites do que significa os principais atributos:
+Podemos fazer palpites sobre o significado dos principais atributos:
 ~~~python
 {
     "curUTC": "2024-05-05T06:06:06", # Data da requisição
@@ -95,7 +95,7 @@ Podemos fazer palpites do que significa os principais atributos:
 }
 ~~~
 
-Reiterando que o significado dos atributos se trata de uma estimativa/palpite uma vez que os nomes dos atributos e dados inerentes ao JSON se encontram abreviados, se torna necessário uma visualização mais detalhada das regras negociais para inferir com exatidão o que cada dado se refere.
+Reiterando que o significado dos atributos se trata de uma estimativa/palpite, uma vez que os nomes dos atributos e dados inerentes ao JSON se encontram abreviados, se torna necessário uma visualização mais detalhada das regras negociais para inferir com exatidão o que cada dado se refere.
 
 O JSON apresenta atributos inteiros, *floats*, booleanos e *strings*, isso se torna essencial na próxima questão para a criação das tabelas do banco de dados, em que necessitamos atribuir os tipos para cada atributo.
 
@@ -109,14 +109,14 @@ Foi utilizado Python 3.11 instalado a partir do gerenciador de pacotes Anaconda.
 
 Inicialmente as tabelas foram criadas utilizando o banco Sqlite por se tratar de um banco de dados local sem necessidade de uma instalação complexa. Porém para observarmos melhor o BD criado e inclusive gerar a imagem a seguir contendo estrutura de relacionamentos, as tabelas foram criadas em um ambiente MySQL, em que podemos utilizar da *feature* engenharia reversa para obter a imagem das relações.
 
-O código forneceu uma correta criação do banco de dados contanto que seja a primeira criação do mesmo, se torna necessário também alterar as credenciais de acesso para o BD MySQL utilizado. Caso não seja desejado esses passos, basta alternar a criação do objeto conn para utilizar Sqlite novamente. Foi necessário também o uso do pacote `mysql-connector-python` instalado pelo comando `pip install mysql-connector-python`
+O código forneceu uma correta criação do banco de dados, contanto que seja a primeira criação do mesmo, se torna necessário também alterar as credenciais de acesso para o BD MySQL utilizado. Caso não seja desejado esses passos, basta alternar a criação do objeto conn para utilizar Sqlite novamente. Foi necessário também o uso do pacote `mysql-connector-python` instalado pelo comando `pip install mysql-connector-python`
 
 Podemos visualizar o banco criado na imagem a seguir:
 
 ![Modelo de Banco de Dados](modelo_banco_mysql.png "Modelo do Banco de Dados")
 
 Gostaria de destacar alguns pontos de cuidado que foram tidos:
-- Assumimos que um pedido pode possuir diversas taxas. E tais taxas podem estar vinculadas a diversos pedidos.
+- Assumimos que um pedido possui diversas taxas. E tais taxas podem estar vinculadas a diversos pedidos.
 - Um pedido pode possuir diversos objetos de detalhe, tendo em vista que o JSON apresenta um *array* para este campo.
 - Um objeto de detalhe tem diversas relações como comentado no contexto fornecido, as relações para estes objetos foram criadas como 1:N seguindo o padrão do objeto `menu_item`, como ele não se apresenta como *array*, foi suposto que haverá apenas 1 em cada `detail_lines`.
 - Considerando essas relações devemos nos atentar a ordem de criação das tabelas para garantir a integridades das chaves estrangeiras.
