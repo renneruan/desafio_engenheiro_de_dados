@@ -32,8 +32,8 @@ Podemos fazer palpites do que significa os principais atributos:
             "lastUpdatedUTC": "2024-01-01T13:13:13",
             "lastUpdatedLcl": "2024-01-01T10:13:13",
             ###
-            "clsdFlag": true,
-            "gstCnt": 1, 
+            "clsdFlag": true, # Indica se o pedido está fechado ou não
+            "gstCnt": 1, # Quantidade de clientes
             "subTtl": 109.9, # Sub total deste pedido
             "nonTxblSlsTtl": null,
             "chkTtl": 109.9, # Total do pedido
@@ -103,7 +103,21 @@ O JSON apresenta atributos inteiros, *floats*, booleanos e *strings*, isso se to
 
 Para a resolução da questão 2 vamos utilizar o código em python `database_creation.py`, presente na pasta deste README. Temos neste arquivo a criação da estrutura de tabelas com a respectiva modelagem de dados apresentada pelo JSON.
 
-Foi utilizado Python 3.11 instalado a partir do gerenciador de pacotes Anaconda.
+#### Questão 3
 
-Em caráter de exemplificação as tabelas foram salvas em um SQLite DB, por se tratar de um banco de dados local sem necessidade de uma instalação complexa. Porém para a imagem contendo estrutura de relacionamento a seguir, as tabelas também foram criadas em um ambiente MySQL, em que podemos utilizar da *feature* engenharia reversa para obter a imagem das relações.
+Foi utilizado Python 3.11 instalado a partir do gerenciador de pacotes Anaconda. Foi criado um ambiente virtual para a realização das tarefas, garantindo a integridade de versões e pacotes python.
+
+Inicialmente as tabelas foram criadas utilizando o banco Sqlite por se tratar de um banco de dados local sem necessidade de uma instalação complexa. Porém para observarmos melhor o BD criado e inclusive gerar a imagem a seguir contendo estrutura de relacionamentos, as tabelas foram criadas em um ambiente MySQL, em que podemos utilizar da *feature* engenharia reversa para obter a imagem das relações.
+
+O código forneceu uma correta criação do banco de dados contanto que seja a primeira criação do mesmo, se torna necessário também alterar as credenciais de acesso para o BD MySQL utilizado. Caso não seja desejado esses passos, basta alternar a criação do objeto conn para utilizar Sqlite novamente. Foi necessário também o uso do pacote `mysql-connector-python` instalado pelo comando `pip install mysql-connector-python`
+
+Podemos visualizar o banco criado na imagem a seguir:
+
+![Modelo de Banco de Dados](modelo_banco_mysql.png "Modelo do Banco de Dados")
+
+Gostaria de destacar alguns pontos de cuidado que foram tidos:
+- Assumimos que um pedido pode possuir diversas taxas. E tais taxas podem estar vinculadas a diversos pedidos.
+- Um pedido pode possuir diversos objetos de detalhe, tendo em vista que o JSON apresenta um *array* para este campo.
+- Um objeto de detalhe tem diversas relações como comentado no contexto fornecido, as relações para estes objetos foram criadas como 1:N seguindo o padrão do objeto `menu_item`, como ele não se apresenta como *array*, foi suposto que haverá apenas 1 em cada `detail_lines`.
+- Considerando essas relações devemos nos atentar a ordem de criação das tabelas para garantir a integridades das chaves estrangeiras.
 
